@@ -14,6 +14,7 @@ messages = [
 ]
 threadList = []
 users = {}
+
 try:
     config = json.load(open("config.json"))
 except:
@@ -24,7 +25,9 @@ except:
     }
 
 if config["eula"] == False:
-    if console.input('I have read and agreed to the "xchat and related components use statement and Disclaimer"（ https://www.thisisxd.tk/index.php/archives/262/ ）') == "y":
+    if console.input(
+        """I have read and agree to the disclaimer(https://thisisxd.tk/index.php/archives/262/).(y/n): """
+        ) == "y":
         config["eula"] = True
     else:
         sys.exit()
@@ -150,12 +153,11 @@ if __name__ == "__main__":
         )
     )
     sock.listen(128)
-
     console.log(f"Server started on 0.0.0.0:{port}.")
 
     while True:
         s, addr = sock.accept()
-        console.log(f"{addr[1]} connected to this server.")
+        console.log(f"{addr} connected to this server.")
         threadList += [addr[1]]
         users[addr[1]] = ""
 
