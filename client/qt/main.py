@@ -21,15 +21,21 @@ console = rich.console.Console()
 address = ()
 sock = None
 thread1 = None
+inUse = False
 
 def send(resp_data):
-    global sock
+    global sock, inUse
+    while inUse:
+        time.sleep(0.1)
+    inUse = True
+
     sock.send(
         json.dumps(
             resp_data
         ).encode("utf-8")
     )
-    return json.loads(sock.recv(1024))
+
+    return json.loads(sock.recv(10240))
 
 # Connect
 class Connect(ui_connect.Ui_Dialog, QDialog):

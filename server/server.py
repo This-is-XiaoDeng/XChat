@@ -10,7 +10,7 @@ import os
 console = Console()
 threads = {}
 messages = [
-        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-server"}
+        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-v2 server"}
 ]
 threadList = []
 users = {}
@@ -21,8 +21,14 @@ except:
     config = {
         "eula":False,
         "port":False,
-        "asp":True
+        "asp":True,
+        "max_resp_msg":15
     }
+
+try:
+    a = config["max_resp_msg"]
+except:
+    config["max_resp_msg"] = 15
 
 if config["eula"] == False:
     if console.input(
@@ -53,10 +59,13 @@ def saveMsg():
 atexit.register(saveMsg)
 
 def handle(sock, addr):
-    global console, messages, threads, threadList, users
+    global console, messages, threads, threadList, users, config
     msgid = 0
     username = ""
-    version = "xchat-v1"
+    version = "xchat-v1 unkown"
+
+    if config["max_resp_msg"] <= messages.__len__():
+        msgid = messages.__len__() - config["max_resp_msg"]
 
     while True:
         resp_data = {
