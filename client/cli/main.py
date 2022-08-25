@@ -7,26 +7,23 @@ import time
 console = Console()
 sock = None
 sockThread = None
-inUse = False
+# inUse = False
 
 def send(data):
-    global sock, inUse, console
-    while inUse:
-        time.sleep(0.1)
-    inUse = True
+    global sock, console
+    # print(inUse)
+    # while inUse:
+        # time.sleep(0.1)
+    # inUse = True
     sock.send(
         json.dumps(data).encode("utf-8")
     )
     recv = sock.recv(10240).decode("utf-8")
-    inUse = False
+    # inUse = False
 
-    try:
-        return json.loads(
-            recv
-        )
-    except Exception as e:
-        console.print("[red][Error] JSON decode error:", recv)
-        return {}
+    return json.loads(
+        recv
+    )
 
 
 
