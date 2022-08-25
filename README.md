@@ -19,7 +19,7 @@ XChat<br>
 
 1. Python3
 2. rich
-3. PySide6（窗口客户端）
+3. PySide2（窗口客户端）
 
 ## 编译步骤
 
@@ -34,7 +34,7 @@ git clone https://github.com/This-is-XiaoDeng/XChat.git
 3、 安装 依赖库
 
 ```bash
-pip install rich pyside6
+pip install rich pyside2
 ```
 
 ## 服务器
