@@ -31,13 +31,14 @@ if config["eula"] == False:
     else:
         sys.exit()
 
-def saveMsg():
+def saveMsg(exit = True):
     global config,  messages
     json.dump(
         config,
         open("config.json", "w")
     )
-    sys.exit()
+    if exit:
+        sys.exit()
 
 atexit.register(saveMsg)
 
@@ -157,6 +158,8 @@ if __name__ == "__main__":
     )
     sock.listen(128)
     console.log(f"Server started on 0.0.0.0:{port}.")
+
+    saveMsg(False)
 
     while True:
         s, addr = sock.accept()
