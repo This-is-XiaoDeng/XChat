@@ -11,7 +11,7 @@ import initcfg
 console = Console()
 threads = {}
 messages = [
-        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-v2 server"}
+        {"from":"Server","msg":"Server Started","time":time.time(),"version":"xchat-v3 server"}
 ]
 threadList = []
 users = {}
@@ -33,22 +33,11 @@ if config["eula"] == False:
 
 def saveMsg():
     global config,  messages
-    try:
-        os.mkdir("logs")
-    except:
-        pass
-
-    json.dump(
-            messages,
-            open(f"./logs/{int(time.time())}.log", "w")
-    )
-
-    messages.clear()
-
     json.dump(
         config,
         open("config.json", "w")
     )
+    sys.exit()
 
 atexit.register(saveMsg)
 
@@ -111,10 +100,20 @@ def handle(sock, addr):
                     resp_data["msg"] = "Unkown mode"
 
             elif recv_data["mode"] == "login":
-                username = recv_data["data"]["username"]
-                users[addr[1]] = username
-                try: version = recv_data["data"]["version"]
-                except: pass
+                if config["server"]["passwd"]:
+                    try: passwd = recv_data["server"]["passwd"]
+                    except: passwd = None
+                else:
+                    passwd = None
+
+                if passwd == config["server"]["passwd"]:
+                    username = recv_data["data"]["username"]
+                    users[addr[1]] = username
+                    try: version = recv_data["data"]["version"]
+                    except: pass
+                else:
+                    resp_data["code"] = 403
+                    resp_data["msg"] = "Wrong Password"
 
             else:
                 resp_data["code"] = 403

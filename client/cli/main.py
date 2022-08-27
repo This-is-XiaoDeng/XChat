@@ -49,6 +49,30 @@ def getMsg():
         except:
             pass
 
+def login(passwd = None):
+    user = console.input(
+        "[yellow]User: "
+    )
+
+    loginRecv = send(
+        {
+            "mode":"login",
+            "data":{
+                "username": user,
+                "version":"xchat-v3 cli",
+                "passwd":passwd
+            }
+        }
+    )
+    
+    # 密码
+    if loginRecv["code"] == 403:
+        if passwd:
+            console.print("[red]Wrong Password!")
+        return login(console.input("[yellow]Password: "))
+    else:
+        return loginRecv
+
 if __name__ == "__main__":
     console.print("[green]XChat CLI V2")
     sock = socket.socket(
@@ -65,17 +89,7 @@ if __name__ == "__main__":
         )
     )
 
-    loginRecv = send(
-        {
-            "mode":"login",
-            "data":{
-                "username":console.input(
-                    "[yellow]User: "
-                ),
-                "version":"xchat-v2 cli"
-            }
-        }
-    )
+    loginRecv = login()
 
     if loginRecv["code"] == 200:
         console.print(
