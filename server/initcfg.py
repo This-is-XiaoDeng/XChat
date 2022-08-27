@@ -5,8 +5,8 @@ def init(cf: dict) -> dict:
     if not("eula" in keys):
         config["eula"] = False
     
-    if not("max_return_msg" in keys):
-        config["max_return_msg"] = 15
+    if not("max_resp_msg" in keys):
+        config["max_resp_msg"] = 15
 
     if not("server" in keys):
         config["server"] = {}

@@ -54,8 +54,8 @@ def handle(sock, addr):
     while True:
         # 重置 resp_data
         resp_data = {
-            "code":502,
-            "msg":"No Return",
+            "code":200,
+            "msg":"OK",
             "data":{}
         }
 
@@ -102,11 +102,11 @@ def handle(sock, addr):
 
             elif recv_data["mode"] == "login":
                 if config["server"]["passwd"]:
-                    try: passwd = recv_data["server"]["passwd"]
+                    try: passwd = recv_data["data"]["passwd"]
                     except: passwd = None
                 else:
                     passwd = None
-
+                console.log(passwd,config["server"]["msg"])
                 if passwd == config["server"]["passwd"]:
                     username = recv_data["data"]["username"]
                     users[addr[1]] = username

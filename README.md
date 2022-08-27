@@ -4,12 +4,16 @@
 
 XChat 是一个简单的，高自定义性聊天软件，支持在 Linux、Windows、Android 等任何一个安装了 Python3 的设备上运行。
 
+> 警告：QT客户端 暂不支持 `xchat-v3` 协议
+
 ## 文件结构
 
 XChat<br>
 ├── client`客户端`<br>
 │   └── cli`命令行版`<br>
 │   │    └── main.py<br>
+│   └── qt`QT版`<br>
+│   │    └── ...<br>
 ├── LICENSE`许可证`<br>
 ├── README.md`说明`<br>
 └── server`服务端`<br>
@@ -41,8 +45,8 @@ pip install rich pyside2 qt_material
 ## 服务器
 
 |IP                 |端口       |区域      |
-|:------------------|:--------:|:-------:|
-|ddns.xiaodeng.tk   |19180     |美国      |
+|:------------------|:--------:|:--------:|
+|ddns.xiaodeng.tk   |19180     |美国-洛杉矶 |
 
 > 通过编辑此文件可以将您的 XChat 服务器添加至此列表
 

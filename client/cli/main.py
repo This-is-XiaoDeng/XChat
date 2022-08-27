@@ -49,10 +49,7 @@ def getMsg():
         except:
             pass
 
-def login(passwd = None):
-    user = console.input(
-        "[yellow]User: "
-    )
+def login(user, passwd = None):
 
     loginRecv = send(
         {
@@ -69,7 +66,7 @@ def login(passwd = None):
     if loginRecv["code"] == 403:
         if passwd:
             console.print("[red]Wrong Password!")
-        return login(console.input("[yellow]Password: "))
+        return login(user, console.input("[yellow]Password: "))
     else:
         return loginRecv
 
@@ -89,7 +86,9 @@ if __name__ == "__main__":
         )
     )
 
-    loginRecv = login()
+    loginRecv = login(console.input(
+        "[yellow]User: "
+    ))
 
     if loginRecv["code"] == 200:
         console.print(
@@ -123,3 +122,5 @@ if __name__ == "__main__":
                     console.print(a["data"]["list"])
                 except:
                     console.print("[red]Failed to get online list, please try again.")
+    else:
+        console.log(loginRecv)
