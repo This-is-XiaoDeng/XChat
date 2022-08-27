@@ -21,13 +21,13 @@ console = rich.console.Console()
 address = ()
 sock = None
 thread1 = None
-inUse = False
+# inUse = False
 
 def send(resp_data):
-    global sock, inUse
-    while inUse:
-        time.sleep(0.1)
-    inUse = True
+    global sock
+    # while inUse:
+        # time.sleep(0.1)
+    # inUse = True
 
     sock.send(
         json.dumps(

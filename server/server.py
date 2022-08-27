@@ -6,6 +6,7 @@ import time
 import atexit
 import sys
 import os
+import initcfg
 
 console = Console()
 threads = {}
@@ -16,19 +17,11 @@ threadList = []
 users = {}
 
 try:
-    config = json.load(open("config.json"))
+    config = json.load(open("data.json"))
 except:
-    config = {
-        "eula":False,
-        "port":False,
-        "asp":True,
-        "max_resp_msg":15
-    }
+    pass
 
-try:
-    a = config["max_resp_msg"]
-except:
-    config["max_resp_msg"] = 15
+config = initcfg.init()
 
 if config["eula"] == False:
     if console.input(
@@ -49,12 +42,15 @@ def saveMsg():
             messages,
             open(f"./logs/{int(time.time())}.log", "w")
     )
+
+    messages.clear()
+
     json.dump(
         config,
-        open("config.json", "w")
+        open("data.json", "w")
     )
 
-    sys.exit(0)
+    # sys.exit(0)
 
 atexit.register(saveMsg)
 
@@ -140,18 +136,19 @@ def handle(sock, addr):
 
 
 if __name__ == "__main__":
-    if config["port"] == False:
+    if config["port"] == None:
         port = int(console.input("[blue]Port: "))
-        if config["asp"]:
-            rem = console.input(
+        if config["server"]["save_port"] == None:
+            rememberPort = console.input(
                 "[blue]Remember the port (y/n)? [/]"
             )
-            if rem == "y":
-                config["port"] = port
-            elif rem == "n":
-                config["asp"] = False
+            if rememberPort == "y":
+                config["server"]["port"] = port
+                config["server"]["save_port"] == True
+            elif rememberPort == "n":
+                config["server"]["save_port"] = False
     else:
-        port = config["port"]
+        port = config["server"]["port"]
 
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
