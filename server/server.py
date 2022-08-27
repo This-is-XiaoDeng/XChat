@@ -17,11 +17,11 @@ threadList = []
 users = {}
 
 try:
-    config = json.load(open("data.json"))
+    config = json.load(open("config.json"))
 except:
-    pass
+    config = {}
 
-config = initcfg.init()
+config = initcfg.init(config)
 
 if config["eula"] == False:
     if console.input(
@@ -47,10 +47,8 @@ def saveMsg():
 
     json.dump(
         config,
-        open("data.json", "w")
+        open("config.json", "w")
     )
-
-    # sys.exit(0)
 
 atexit.register(saveMsg)
 
@@ -64,13 +62,15 @@ def handle(sock, addr):
         msgid = messages.__len__() - config["max_resp_msg"]
 
     while True:
+        # 重置 resp_data
         resp_data = {
-            "code":200,
-            "msg":"OK",
+            "code":502,
+            "msg":"No Return",
             "data":{}
         }
 
         recv_data = sock.recv(1024)
+
         try:
             recv_data = recv_data.decode("utf-8")
             recv_data = json.loads(recv_data)
@@ -78,10 +78,16 @@ def handle(sock, addr):
             if username != "":
                 if recv_data["mode"] == "getMsg":
                     try:
+                        # 限制返回数据量
+                        if config["max_resp_msg"] <= messages.__len__():
+                            msgid = messages.__len__() - config["max_resp_msg"]
+                            
                         resp_data["data"]["messages"] = messages[msgid:]
                         msgid = messages.__len__()
+
                     except:
                         resp_data["data"]["messages"] = []
+
                 elif recv_data["mode"] == "sendMsg":
                     messages += [
                         {
@@ -93,10 +99,6 @@ def handle(sock, addr):
                     ]
                     console.log(f"[CHAT] <{username}({version})> {recv_data['data']['msg']}")
 
-                elif recv_data["mode"] == "exit":
-                    sock.close()
-                    return 0
-
                 elif recv_data["mode"] == "getList":
                     userList = []
                     for t in threadList:
@@ -104,19 +106,15 @@ def handle(sock, addr):
                             userList += [users[t]]
                     resp_data["data"]["list"] = userList
 
-
                 else:
                     resp_data["code"] = 404
                     resp_data["msg"] = "Unkown mode"
 
             elif recv_data["mode"] == "login":
                 username = recv_data["data"]["username"]
-                # threads[addr[1]].setName(username)
                 users[addr[1]] = username
-                try:
-                    version = recv_data["data"]["version"]
-                except:
-                    pass
+                try: version = recv_data["data"]["version"]
+                except: pass
 
             else:
                 resp_data["code"] = 403
@@ -136,7 +134,7 @@ def handle(sock, addr):
 
 
 if __name__ == "__main__":
-    if config["port"] == None:
+    if config["server"]["port"] == None:
         port = int(console.input("[blue]Port: "))
         if config["server"]["save_port"] == None:
             rememberPort = console.input(
