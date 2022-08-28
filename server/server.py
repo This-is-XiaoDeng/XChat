@@ -48,7 +48,7 @@ def handle(sock, addr):
     username = ""
     version = "xchat-v1 unkown"
 
-    if config["max_resp_msg"] <= messages.__len__():
+    if config["max_resp_msg"] <= messages.__len__() - msgid:
         msgid = messages.__len__() - config["max_resp_msg"]
 
     while True:
@@ -69,7 +69,7 @@ def handle(sock, addr):
                 if recv_data["mode"] == "getMsg":
                     try:
                         # 限制返回数据量
-                        if config["max_resp_msg"] <= messages.__len__():
+                        if config["max_resp_msg"] <= messages.__len__() - msgid:
                             msgid = messages.__len__() - config["max_resp_msg"]
                             
                         resp_data["data"]["messages"] = messages[msgid:]
